@@ -1,9 +1,9 @@
 require('dotenv').config()
 const express = require('express')
-const directWhitelist = require('../whitelist.json')
+const directWhitelist = require('./whitelist.env.js')
 const { verify, web3, verifier, sale } = require('./web3.js')
 const { ApiError, createHandler } = require('./api.js')
-const allTokenURIs = require('./token-uris.js')
+const allTokenURIs = require('./token-uris.env.js')
 
 const METADATA_WAIT = parseInt(process.env.METADATA_WAIT)
 

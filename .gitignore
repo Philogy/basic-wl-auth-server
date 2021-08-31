@@ -1,4 +1,3 @@
 node_modules
-whitelist.json
 .env
-src/token-uris.js
+**/*.env.*
