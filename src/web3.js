@@ -1,6 +1,63 @@
 require('dotenv').config()
 const Web3 = require('web3')
-const web3 = new Web3(process.env.PROVIDER_ENDPOINT)
+const SaleContractAbi = require('./sale-contract-abi.js')
+const web3 = new Web3(
+  process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:7545' : process.env.PROVIDER_ENDPOINT
+)
+
+const sale = new web3.eth.Contract(SaleContractAbi, process.env.SALE_ADDRESS)
+sale.pastBuys = []
+sale.nextUpdateBlock = 'earliest'
+
+sale.fetchPastBuys = async () => {
+  const { number: block } = await web3.eth.getBlock('latest')
+  if (block < sale.nextUpdateBlock) return
+  const events = await sale.getPastEvents('Buy', {
+    fromBlock: sale.nextUpdateBlock,
+    toBlock: block
+  })
+  const buys = events.map(({ blockNumber, returnValues }) => ({
+    block: blockNumber,
+    amount: parseInt(returnValues.amount)
+  }))
+  console.log('buys: ', buys)
+  const accBuys = []
+  const pastBuys = sale.pastBuys.length
+  let total = pastBuys > 0 ? sale.pastBuys[pastBuys - 1].total : 0
+  for (const { block, amount } of buys) {
+    total += amount
+    accBuys.push({ block, total })
+  }
+  sale.pastBuys = sale.pastBuys.concat(accBuys)
+  sale.nextUpdateBlock = block + 1
+  console.log('sale.pastBuys: ', sale.pastBuys)
+  console.log('sale.nextUpdateBlock: ', sale.nextUpdateBlock)
+}
+
+sale.findLastBuy = (beforeBlock) => {
+  let left = 0
+  const buys = sale.pastBuys.length
+  let right = buys - 1
+
+  const maxSearch = Math.floor(Math.log(buys) / Math.log(2)) + 1
+  for (let i = 0; i < maxSearch; i++) {
+    const mid = Math.floor((left + right) / 2)
+    const buy = sale.pastBuys[mid]
+    if (buy.block == beforeBlock) return buy
+    if (buy.block > beforeBlock) right = mid - 1
+    else left = mid + 1
+
+    if (right < left) {
+      if (right == -1) return null
+      return sale.pastBuys[right]
+    }
+  }
+
+  throw new Error('not found')
+}
+
+sale.fetchPastBuys()
+
 const verifier = web3.eth.accounts.wallet.add(process.env.VERIFIER_PRIV_KEY)
 
 const keccak256 = (value) => web3.utils.soliditySha3({ type: 'string', value })
@@ -42,6 +99,7 @@ const metadata = async (tokenIds, tokenURIs) => {
 
 module.exports = {
   web3,
+  sale,
   verifier,
   verify: {
     whitelist,
