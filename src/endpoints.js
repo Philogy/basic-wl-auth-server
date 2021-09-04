@@ -1,15 +1,16 @@
 const express = require('express')
 const router = express.Router()
 const { verify, web3, verifier, sale } = require('./web3.js')
+const SaleContractAbi = require('./sale-contract-abi.js')
 const { ApiError, createHandler } = require('./api.js')
 const directWhitelist = require('./whitelist.env.js')
+const verifyCaptcha = require('./captcha.js')
 
 const whitelist = new Set(directWhitelist.map((address) => address.toLowerCase()))
 
 router.post(
-  '/get-whitelist-proof',
+  '/verify-whitelist',
   createHandler(async ({ body }) => {
-    console.log('body: ', body)
     const account = body?.address
     if (!web3.utils.isHexStrict(account) || account.length !== 42) {
       throw new ApiError(400, `"${account}" is not a valid address`)
@@ -36,16 +37,30 @@ router.get(
 
 router.get(
   '/sale-contract',
-  createHandler(async () => ({ saleAddress: process.env.SALE_ADDRESS }))
+  createHandler(async () => process.env.SALE_ADDRESS)
+)
+
+router.get(
+  '/sale-contract/abi',
+  createHandler(async () => SaleContractAbi)
 )
 
 router.post(
-  '/captcha-verify',
+  '/verify-captcha',
   createHandler(async ({ body, connection }) => {
-    console.log('body: ', body)
-    console.log('connection: ', connection)
-    console.log('body.captcha: ', body.captcha)
-    throw new ApiError(404, 'still broke')
+    const account = body?.address
+    const captcha = body?.captcha
+    if (!web3.utils.isHexStrict(account) || account.length !== 42) {
+      throw new ApiError(400, `"${account}" is not a valid address`)
+    } else if (!captcha) {
+      throw new ApiError(400, 'missing captcha')
+    }
+    const passedCaptcha = await verifyCaptcha(captcha, connection.remoteAddress)
+    if (!passedCaptcha) {
+      throw new ApiError(403, 'captcha invalid')
+    }
+    const signature = await verify.captcha(account)
+    return { signature }
   })
 )
 

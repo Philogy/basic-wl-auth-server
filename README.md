@@ -8,23 +8,14 @@ server to authenticate requests from client and provide proof for smart contract
   * `VERIFIER_PRIV_KEY`: hex encoded private key of verifier
   * `PROVIDER_ENDPOINT`: infura or other JSON-RPC endpoint
   * `SALE_ADDRESS`: ethereum address of deployed sale contract
-  * `METADATA_WAIT`: blocks to wait for until tokenURI can be fetched
+  * `RECAPTCHA_SECRET`: recaptcha server-side secret provided by google
 * `src/whitelist.env.js`
+
     ```javascript
     module.exports = [Address]
-
     ```
     should be simple javascript file which has an array of ethereum addresses as
     its only and direct export. These addresses will be considered whitelisted
-* `src/token-uris.env.js`
-    ```javascript
-    module.exports = [TokenURI]
-    ```
-
-    should be simple javascript file which has an array of metadata URIs as
-    its only and direct export. These tokenURIs are assumed to be in a random
-    order as they will be assigned to the NFTs in their given order. The 3rd URI
-    for example will be assigned to the 3rd NFT (tokenId: 2)
 
 #### Endpoints
 
@@ -34,7 +25,15 @@ server to authenticate requests from client and provide proof for smart contract
       verifier
     * 200 `String`: the address of the verifier
 
-* `/get-whitelist-proof` __`(POST)`__ 
+* `/sale-contract` __`(GET)`__ 
+  * Responses:
+    * 200 `String`: the address of the sale contract
+
+* `/sale-contract/abi` __`(GET)`__ 
+  * Responses:
+    * 200 `Object`: the ABI of the sale contract
+
+* `/verify-whitelist` __`(POST)`__ 
   * Parameters:
     ```javascript
     {
@@ -45,32 +44,28 @@ server to authenticate requests from client and provide proof for smart contract
   * Responses:
     * 400 if address is not a valid ethereum address
     * 403 if the address is not whitelisted
-    * 200
+    * 200 if the address is valid and contained within the whitelist
     ```javascript
     {
       "signature": String // hex encoded signature ready for web3
     }
-    ```
 
-* `/get-metadata-proof` __`(POST)`__ 
+* `/verify-captcha` __`(POST)`__ 
   * Parameters:
     ```javascript
     {
-      "tokenIds": [Number | String] // tokens for which to get proof
+      "address": String, // address for which to validate captcha
+      "captcha": String // captcha .value provided by the captcha element
     }
+
     ```
   * Responses:
-    * 400 if `tokenIds` is not an array
-    * 400 if `tokenIds` contains non decimal number inputs
-    * 400 if `tokenIds` is an empty array
-    * 400 if `tokenIds` contains a `tokenId` below 0
-    * 401 if `tokenIds` contains a token which was not part of a buy atleast
-      `METADATA_WAIT` blocks ago
-    * 200
+    * 400 if address is not a valid ethereum address
+    * 400 if the captcha field is empty or missing
+    * 403 if the captcha failed to verify
+    * 200 if the captcha and address are valid
     ```javascript
     {
-      "tokenURIs": [String], // corresponding tokenURIs in the order of the provided tokenIds
       "signature": String // hex encoded signature ready for web3
     }
     ```
-

@@ -35,31 +35,34 @@ const deploySale = async (
   return saleContract
 }
 
+function doPost(endpoint, body) {
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+}
+
 async function main() {
   const web3 = (window.web3 = new Web3(window.ethereum))
   web3.eth.handleRevert = true
   const BN = web3.utils.BN
   const $ = (selector) => document.querySelector(selector)
-  const { saleAddress } = await (await fetch('/api/sale-contract')).json()
+  const saleAddress = await (await fetch('/api/sale-contract')).json()
   window.sale = new web3.eth.Contract(window.SaleContract.abi, saleAddress)
 
   $('#connect-account').addEventListener('click', () => connect())
 
   $('#whitelist-buy').addEventListener('submit', async (e) => {
     e.preventDefault()
-    console.log('e: ', e)
     if (!window.mainAccount) {
       window.alert('wallet not connected')
       return
     }
-    const res = await fetch('/api/get-whitelist-proof', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: JSON.stringify({ address: window.mainAccount })
+    const res = await doPost('/api/verify-whitelist', {
+      address: window.mainAccount
     })
     if (res.status === 403) {
       window.alert('not whitelisted')
@@ -81,7 +84,17 @@ async function main() {
 
   $('#public-buy').addEventListener('submit', async (e) => {
     e.preventDefault()
-    console.log('public buy')
+    if (!window.mainAccount) {
+      window.alert('wallet not connected')
+      return
+    }
+    const captcha = $('#g-recaptcha-response').value
+    if (!captcha) {
+      window.alert('must solve captcha')
+      return
+    }
+    const res = await doPost('/api/verify-captcha', { address: window.mainAccount, captcha })
+    console.log('res: ', res)
   })
 
   window.setMainAccount = (mainAccount) => {
