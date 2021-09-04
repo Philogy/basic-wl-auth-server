@@ -20,7 +20,6 @@ sale.fetchPastBuys = async () => {
     block: blockNumber,
     amount: parseInt(returnValues.amount)
   }))
-  console.log('buys: ', buys)
   const accBuys = []
   const pastBuys = sale.pastBuys.length
   let total = pastBuys > 0 ? sale.pastBuys[pastBuys - 1].total : 0
@@ -30,8 +29,6 @@ sale.fetchPastBuys = async () => {
   }
   sale.pastBuys = sale.pastBuys.concat(accBuys)
   sale.nextUpdateBlock = block + 1
-  console.log('sale.pastBuys: ', sale.pastBuys)
-  console.log('sale.nextUpdateBlock: ', sale.nextUpdateBlock)
 }
 
 sale.findLastBuy = (beforeBlock) => {

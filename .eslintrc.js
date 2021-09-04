@@ -8,7 +8,8 @@ module.exports = {
     window: 'readonly',
     document: 'readonly',
     Web3: 'readonly',
-    alert: 'readonly'
+    alert: 'readonly',
+    fetch: 'readonly'
   },
   extends: 'eslint:recommended',
   parserOptions: {
