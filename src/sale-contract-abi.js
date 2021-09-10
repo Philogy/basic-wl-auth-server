@@ -15,18 +15,13 @@ module.exports = [
         components: [
           {
             internalType: 'uint64',
-            name: 'price',
+            name: 'start',
             type: 'uint64'
           },
           {
-            internalType: 'uint32',
-            name: 'start',
-            type: 'uint32'
-          },
-          {
-            internalType: 'uint32',
+            internalType: 'uint64',
             name: 'end',
-            type: 'uint32'
+            type: 'uint64'
           },
           {
             internalType: 'uint64',
@@ -47,18 +42,13 @@ module.exports = [
         components: [
           {
             internalType: 'uint64',
-            name: 'price',
+            name: 'start',
             type: 'uint64'
           },
           {
-            internalType: 'uint32',
-            name: 'start',
-            type: 'uint32'
-          },
-          {
-            internalType: 'uint32',
+            internalType: 'uint64',
             name: 'end',
-            type: 'uint32'
+            type: 'uint64'
           },
           {
             internalType: 'uint64',
@@ -78,6 +68,11 @@ module.exports = [
       {
         internalType: 'uint256',
         name: '_maxTotal',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_price',
         type: 'uint256'
       },
       {
@@ -290,6 +285,19 @@ module.exports = [
   },
   {
     inputs: [],
+    name: 'baseURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'defaultURI',
     outputs: [
       {
@@ -404,24 +412,32 @@ module.exports = [
   },
   {
     inputs: [],
+    name: 'price',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'publicSale',
     outputs: [
       {
         components: [
           {
             internalType: 'uint64',
-            name: 'price',
+            name: 'start',
             type: 'uint64'
           },
           {
-            internalType: 'uint32',
-            name: 'start',
-            type: 'uint32'
-          },
-          {
-            internalType: 'uint32',
+            internalType: 'uint64',
             name: 'end',
-            type: 'uint32'
+            type: 'uint64'
           },
           {
             internalType: 'uint64',
@@ -556,25 +572,6 @@ module.exports = [
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    name: 'tokenURISetter',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     inputs: [],
     name: 'totalBuys',
     outputs: [
@@ -657,18 +654,13 @@ module.exports = [
         components: [
           {
             internalType: 'uint64',
-            name: 'price',
+            name: 'start',
             type: 'uint64'
           },
           {
-            internalType: 'uint32',
-            name: 'start',
-            type: 'uint32'
-          },
-          {
-            internalType: 'uint32',
+            internalType: 'uint64',
             name: 'end',
-            type: 'uint32'
+            type: 'uint64'
           },
           {
             internalType: 'uint64',
@@ -692,6 +684,19 @@ module.exports = [
       }
     ],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_newBaseURI',
+        type: 'string'
+      }
+    ],
+    name: 'setBaseURI',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -772,29 +777,6 @@ module.exports = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_userMaxBuys',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: '_price',
-        type: 'uint256'
-      },
-      {
-        internalType: 'bytes',
-        name: '_vipBuySig',
-        type: 'bytes'
-      }
-    ],
-    name: 'doVipBuy',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
         internalType: 'bytes',
         name: '_captchaSig',
         type: 'bytes'
@@ -803,29 +785,6 @@ module.exports = [
     name: 'doPublicBuy',
     outputs: [],
     stateMutability: 'payable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256[]',
-        name: '_tokenIds',
-        type: 'uint256[]'
-      },
-      {
-        internalType: 'string[]',
-        name: '_tokenURIs',
-        type: 'string[]'
-      },
-      {
-        internalType: 'bytes',
-        name: '_validMetadataSig',
-        type: 'bytes'
-      }
-    ],
-    name: 'revealMetadata',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -889,11 +848,6 @@ module.exports = [
     inputs: [],
     name: 'getConstants',
     outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32'
-      },
       {
         internalType: 'bytes32',
         name: '',
