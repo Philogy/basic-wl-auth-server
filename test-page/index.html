@@ -51,6 +51,88 @@
       <div class="row">
         <div class="col-sm-12">
           <h3>Deploy sale</h1>
+          <form id="deploy" style="border: 2px solid green; padding: 1.2em;">
+            <h4>General Parameters</h4>
+            <div class="row">
+              <label for="deploy-name" class="col-sm-1 col-form-label">Name:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="deploy-name">
+              </div>
+              <label for="deploy-symbol" class="col-sm-1 col-form-label">Symbol:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control col-sm-8" id="deploy-symbol">
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <label for="max-total" class="col-sm-1 col-form-label">Maximum total NFTs:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="max-total">
+              </div>
+              <label for="sale-price" class="col-sm-2 col-form-label">NFT price (ETH / unit):</label>
+              <div class="col-sm-2">
+                <input type="number" step="0.005" class="form-control" id="sale-price">
+              </div>
+              <label for="sale-verifier" class="col-sm-2
+                col-form-label">Verifier address:</label>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="sale-verifier">
+              </div>
+            </div>
+            <div class="row">
+              <label for="sale-default-uri" class="col-sm-2
+                col-form-label">Default URI:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="sale-default-uri">
+              </div>
+            </div>
+            <br>
+            <h4>Whitelisted Sale Parameters</h4>
+            <div class="row">
+              <label for="whitelist-start" class="col-sm-1 col-form-label">Start:</label>
+              <div class="col-sm-2">
+                <input type="datetime-local" class="form-control" id="whitelist-start">
+              </div>
+              <label for="whitelist-end" class="col-sm-1 col-form-label">End:</label>
+              <div class="col-sm-2">
+                <input type="datetime-local" class="form-control col-sm-8" id="whitelist-end">
+              </div>
+              <label for="whitelist-user-max" class="col-sm-1 col-form-label">Max user buys:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="whitelist-user-max">
+              </div>
+              <label for="whitelist-total-max" class="col-sm-1
+                col-form-label">Total max:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="whitelist-total-max">
+              </div>
+            </div>
+            <h4>Public Sale Parameters</h4>
+            <div class="row">
+              <label for="public-start" class="col-sm-1 col-form-label">Start:</label>
+              <div class="col-sm-2">
+                <input type="datetime-local" class="form-control" id="public-start">
+              </div>
+              <label for="public-end" class="col-sm-1 col-form-label">End:</label>
+              <div class="col-sm-2">
+                <input type="datetime-local" class="form-control col-sm-8"
+                id="public-end">
+              </div>
+              <label for="public-user-max" class="col-sm-1 col-form-label">Max user buys:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="public-user-max">
+              </div>
+              <label for="public-total-max" class="col-sm-1
+                col-form-label">Total max:</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" id="public-total-max">
+              </div>
+            </div>
+            <button type="submit" class="col-sm-1 btn btn-primary">Deploy</button>
+          </form>
+        </div>
+        <div id="deploy-status">
+          Deploy status: Not yet depoyed
         </div>
       </div>
     </div>

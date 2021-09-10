@@ -5,7 +5,6 @@ const connect = async () => {
 }
 
 const saleParamsToArg = (params) => [
-  params.price,
   params.start,
   params.end,
   params.userMaxBuys,
@@ -13,7 +12,7 @@ const saleParamsToArg = (params) => [
 ]
 
 const deploySale = async (
-  { name, symbol, maxTotal, verifier, defaultURI },
+  { name, symbol, maxTotal, price, verifier, defaultURI },
   whitelistSale,
   publicSale,
   account
@@ -27,6 +26,7 @@ const deploySale = async (
         saleParamsToArg(whitelistSale),
         saleParamsToArg(publicSale),
         maxTotal,
+        price,
         verifier,
         defaultURI
       ]
@@ -52,6 +52,22 @@ async function main() {
   const $ = (selector) => document.querySelector(selector)
   const saleAddress = await (await fetch('/api/sale-contract')).json()
   window.sale = new web3.eth.Contract(window.SaleContract.abi, saleAddress)
+
+  const getValues = (selectorObj) => {
+    const values = {}
+    for (const [key, selector] of Object.entries(selectorObj)) {
+      values[key] = $(selector).value
+    }
+    return values
+  }
+
+  const applyFnObj = (obj, fnObj) => {
+    const newObj = {}
+    for (const [key, value] of Object.entries(obj)) {
+      newObj[key] = (fnObj[key] ?? ((x) => x))(value)
+    }
+    return newObj
+  }
 
   $('#connect-account').addEventListener('click', () => connect())
 
@@ -97,7 +113,78 @@ async function main() {
     console.log('res: ', res)
   })
 
+  $('#deploy').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    if (!window.mainAccount) {
+      window.alert('wallet not connected')
+      return
+    }
+    const globalValues = applyFnObj(
+      getValues({
+        name: '#deploy-name',
+        symbol: '#deploy-symbol',
+        maxTotal: '#max-total',
+        price: '#sale-price',
+        verifier: '#sale-verifier',
+        defaultURI: '#sale-default-uri'
+      }),
+      {
+        maxTotal: parseInt,
+        price: web3.utils.toWei
+      }
+    )
+    console.log('globalValues: ', globalValues)
+
+    const convertRawData = (date) => Math.floor(new Date(date).getTime() / 1000)
+
+    const saleParamsConv = {
+      start: convertRawData,
+      end: convertRawData,
+      userMaxBuys: parseInt,
+      totalMaxBuys: parseInt
+    }
+
+    const whitelistParams = applyFnObj(
+      getValues({
+        start: '#whitelist-start',
+        end: '#whitelist-end',
+        userMaxBuys: '#whitelist-user-max',
+        totalMaxBuys: '#whitelist-total-max'
+      }),
+      saleParamsConv
+    )
+    console.log('whitelistParams: ', whitelistParams)
+
+    const publicParams = applyFnObj(
+      getValues({
+        start: '#public-start',
+        end: '#public-end',
+        userMaxBuys: '#public-user-max',
+        totalMaxBuys: '#public-total-max'
+      }),
+      saleParamsConv
+    )
+    console.log('publicParams: ', publicParams)
+
+    try {
+      const newSaleContract = await deploySale(
+        globalValues,
+        whitelistParams,
+        publicParams,
+        window.mainAccount
+      )
+      $(
+        '#deploy-status'
+      ).innerText = `Deploy status: deployed at ${newSaleContract.options.address}`
+    } catch (error) {
+      $('#deploy-status').innerText = 'Deploy status: deploy failed'
+      console.log('error: ', error)
+      window.deployError = error
+    }
+  })
+
   window.setMainAccount = (mainAccount) => {
+    window.alert(`connected ${mainAccount}`)
     window.mainAccount = mainAccount
     $('#account').innerText = mainAccount ? `Connected ${mainAccount}` : 'No account connected'
     $('#connect-account').style.display = mainAccount ? 'none' : 'block'
