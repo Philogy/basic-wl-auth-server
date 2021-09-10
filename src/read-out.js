@@ -1,11 +1,26 @@
 require('dotenv').config()
-const { web3, sale } = require('./web3')
+process.env.NODE_ENV = 'development'
+const { sale } = require('./web3')
 
 async function main() {
-  const block = await web3.eth.getBlock('latest')
-  console.log('block: ', block)
-  const whitelistedSale = await sale.methods.whitelistedSale().call()
-  console.log('whitelistedSale: ', whitelistedSale)
+  const toReadout = [
+    'whitelistedSale',
+    'publicSale',
+    'totalBuys',
+    'totalIssued',
+    'maxTotal',
+    'price',
+    'verifier',
+    'defaultURI',
+    'baseURI',
+    'symbol',
+    'name'
+  ]
+
+  for (const readout of toReadout) {
+    const value = await sale.methods[readout]().call()
+    console.log(`${readout}:`, value)
+  }
 }
 
 main().then(() => process.exit(0))
