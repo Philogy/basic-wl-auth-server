@@ -19,7 +19,12 @@ server to authenticate requests from client and provide proof for smart contract
 
 #### Endpoints
 
-* `/verifier` __`(GET)`__ 
+* `/` **`(GET)`**
+
+  will serve static files contained in the `/page` or `/test-page` directory
+  depending on whether the api is run in development mode or not
+
+* `/verifier` __`(GET)`__
   * Responses:
     * 400 if the server stored verifier private key does not match the sale contract
       verifier
