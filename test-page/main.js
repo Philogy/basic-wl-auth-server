@@ -50,8 +50,12 @@ async function main() {
   web3.eth.handleRevert = true
   const BN = web3.utils.BN
   const $ = (selector) => document.querySelector(selector)
-  const saleAddress = await (await fetch('/api/sale-contract')).json()
-  window.sale = new web3.eth.Contract(window.SaleContract.abi, saleAddress)
+  try {
+    const saleAddress = await (await fetch('/api/sale-contract')).json()
+    window.sale = new web3.eth.Contract(window.SaleContract.abi, saleAddress)
+  } catch (err) {
+    console.log('no sale available', err)
+  }
 
   const getValues = (selectorObj) => {
     const values = {}
@@ -85,8 +89,8 @@ async function main() {
     } else if (res.status === 200) {
       const { signature } = await res.json()
       const buyAmount = $('#whitelist-buy-amount').value
-      const data = await window.sale.methods.whitelistedSale().call()
-      const total = new BN(data.params.price).mul(new BN(buyAmount))
+      const price = await window.sale.methods.price().call()
+      const total = new BN(price).mul(new BN(buyAmount))
       await window.sale.methods
         .doWhitelistBuy(signature)
         .send({ from: window.mainAccount, value: total })
@@ -110,7 +114,20 @@ async function main() {
       return
     }
     const res = await doPost('/api/verify-captcha', { address: window.mainAccount, captcha })
-    console.log('res: ', res)
+    if (res.status === 403) {
+      window.alert('Invalid captcha')
+    } else if (res.status !== 200) {
+      window.alert('Other error occured')
+    } else {
+      const { signature } = await res.json()
+      const buyAmount = $('#public-buy-amount').value
+      const price = await window.sale.methods.price().call()
+      const total = new BN(price).mul(new BN(buyAmount))
+      await window.sale.methods
+        .doPublicBuy(signature)
+        .send({ from: window.mainAccount, value: total })
+      alert('successfully bought')
+    }
   })
 
   $('#deploy').addEventListener('submit', async (e) => {

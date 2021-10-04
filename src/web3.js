@@ -2,7 +2,9 @@ require('dotenv').config()
 const Web3 = require('web3')
 const SaleContractAbi = require('./sale-contract-abi.js')
 const web3 = new Web3(
-  process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:7545' : process.env.PROVIDER_ENDPOINT
+  process.env.NODE_ENV === 'development' && !process.env.IS_TESTNET
+    ? 'http://127.0.0.1:7545'
+    : process.env.PROVIDER_ENDPOINT
 )
 
 const sale = new web3.eth.Contract(SaleContractAbi, process.env.SALE_ADDRESS)

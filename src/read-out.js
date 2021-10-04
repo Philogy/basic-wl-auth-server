@@ -1,5 +1,5 @@
 require('dotenv').config()
-process.env.NODE_ENV = 'development'
+//process.env.NODE_ENV = 'development'
 const { sale } = require('./web3')
 
 async function main() {
