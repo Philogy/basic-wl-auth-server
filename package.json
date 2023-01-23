@@ -1,5 +1,5 @@
 {
-  "name": "trippy-auth-server",
+  "name": "basic-auth-wl-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

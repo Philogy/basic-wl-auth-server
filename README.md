@@ -1,4 +1,4 @@
-## Trippy NFT Sale Auth Server
+## Basic NFT Whitelist Auth Server
 server to authenticate requests from client and provide proof for smart contract
 
 ### Documentation

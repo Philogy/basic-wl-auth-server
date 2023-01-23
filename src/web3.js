@@ -12,8 +12,8 @@ const verifier = web3.eth.accounts.wallet.add(process.env.VERIFIER_PRIV_KEY)
 
 const keccak256 = (value) => web3.utils.soliditySha3({ type: 'string', value })
 const constants = {
-  DS_IS_WHITELISTED: keccak256('trippy-nfts.access.is-whitelisted(address)'),
-  DS_CAPTCHA_SOLVED: keccak256('trippy-nfts.access.captcha-solved(address)')
+  DS_IS_WHITELISTED: keccak256('basic-nfts.access.is-whitelisted(address)'),
+  DS_CAPTCHA_SOLVED: keccak256('basic-nfts.access.captcha-solved(address)')
 }
 
 const adjustSigV = (sig) => {

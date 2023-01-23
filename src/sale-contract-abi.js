@@ -34,7 +34,7 @@ module.exports = [
             type: 'uint64'
           }
         ],
-        internalType: 'struct TrippyNFTs.SaleParams',
+        internalType: 'struct BasicNFTs.SaleParams',
         name: '_whitelistedSaleParams',
         type: 'tuple'
       },
@@ -61,7 +61,7 @@ module.exports = [
             type: 'uint64'
           }
         ],
-        internalType: 'struct TrippyNFTs.SaleParams',
+        internalType: 'struct BasicNFTs.SaleParams',
         name: '_publicSaleParams',
         type: 'tuple'
       },
@@ -298,19 +298,6 @@ module.exports = [
   },
   {
     inputs: [],
-    name: 'contractURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
     name: 'defaultURI',
     outputs: [
       {
@@ -463,7 +450,7 @@ module.exports = [
             type: 'uint64'
           }
         ],
-        internalType: 'struct TrippyNFTs.SaleParams',
+        internalType: 'struct BasicNFTs.SaleParams',
         name: 'params',
         type: 'tuple'
       },
@@ -686,7 +673,7 @@ module.exports = [
             type: 'uint64'
           }
         ],
-        internalType: 'struct TrippyNFTs.SaleParams',
+        internalType: 'struct BasicNFTs.SaleParams',
         name: 'params',
         type: 'tuple'
       },
@@ -697,19 +684,6 @@ module.exports = [
       }
     ],
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'string',
-        name: '_contractURI',
-        type: 'string'
-      }
-    ],
-    name: 'setContractURI',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
